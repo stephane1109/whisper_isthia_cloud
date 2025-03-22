@@ -5,10 +5,8 @@ import whisper
 import concurrent.futures
 import time
 
-
 # Fonction pour télécharger l'audio d'une vidéo YouTube
 def telecharger_audio_youtube(url, chemin_sortie="Téléchargement"):
-    # Télécharge l'audio d'une vidéo YouTube et retourne le chemin du fichier audio téléchargé
     try:
         if not os.path.exists(chemin_sortie):
             os.makedirs(chemin_sortie)
@@ -29,10 +27,8 @@ def telecharger_audio_youtube(url, chemin_sortie="Téléchargement"):
         st.error(f"Erreur lors du téléchargement : {e}")
         return None
 
-
 # Fonction pour transcrire un fichier audio en texte
 def transcrire_audio(chemin_audio, taille_modele="base", langue="fr"):
-    # Transcrit un fichier audio en texte en utilisant le modèle Whisper
     try:
         modele = whisper.load_model(taille_modele)
         resultat = modele.transcribe(chemin_audio, language=langue)
@@ -40,7 +36,6 @@ def transcrire_audio(chemin_audio, taille_modele="base", langue="fr"):
     except Exception as e:
         st.error(f"Erreur lors de la transcription : {e}")
         return None
-
 
 # Interface Streamlit
 st.title("Transcription d'audio - Vidéo YouTube ou Fichier MP3")
@@ -59,20 +54,16 @@ source = st.radio("Choisissez la source de l'audio", options=["URL YouTube", "Fi
 chemin_audio = None
 
 if source == "URL YouTube":
-    # Saisie de l'URL de la vidéo YouTube
     url_video = st.text_input("Entrez l'URL de la vidéo YouTube", value="https://www.youtube.com/watch?v=WDQqDOXAUIM")
 elif source == "Fichier audio (mp3)":
-    # Importer un fichier audio MP3
     fichier_audio = st.file_uploader("Importer un fichier audio MP3", type=["mp3"])
 
 # Sélection de la taille du modèle Whisper
 taille_modele = st.selectbox("Choisissez la taille du modèle Whisper",
                              options=["tiny", "base", "small", "medium", "large"], index=1)
 
-# Saisie du code langue pour la transcription (exemple : 'fr' pour français)
 langue = st.text_input("Code de la langue pour la transcription", value="fr")
 
-# Bouton pour lancer la transcription
 if st.button("Lancer la transcription"):
     if source == "URL YouTube":
         if url_video:
@@ -100,18 +91,15 @@ if st.button("Lancer la transcription"):
         else:
             st.error("Veuillez importer un fichier audio MP3.")
 
-    # Si le chemin de l'audio est défini, procéder à la transcription avec une barre de progression
     if chemin_audio:
         with st.spinner("Transcription en cours..."):
-            # Exécution de la transcription dans un thread séparé pour permettre la mise à jour de la barre de progression
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(transcrire_audio, chemin_audio, taille_modele, langue)
                 progress_bar = st.progress(0)
-                progress_text = st.empty()  # Zone de texte pour afficher la progression sur une seule ligne
+                progress_text = st.empty()
                 progress = 0
-                # Boucle pour simuler la progression
                 while not future.done():
-                    time.sleep(0.1)  # Pause de 0.1 seconde
+                    time.sleep(0.1)
                     progress = min(99, progress + 1)
                     progress_bar.progress(progress)
                     if debug_mode:
@@ -120,10 +108,16 @@ if st.button("Lancer la transcription"):
                 progress_bar.progress(100)
                 progress_text.text("Progression : 100%")
         if texte_transcription:
-        # Affichage de la transcription dans l'interface
+            chemin_transcription = os.path.splitext(chemin_audio)[0] + ".txt"
+            try:
+                with open(chemin_transcription, "w", encoding="utf-8") as fichier:
+                    # Vous pouvez modifier ou supprimer l'en-tête ci-dessous selon vos besoins
+                    fichier.write(texte_transcription)
+                st.success(f"Transcription enregistrée dans : {chemin_transcription}")
+            except Exception as e:
+                st.error(f"Erreur lors de l'enregistrement de la transcription : {e}")
             st.subheader("Transcription")
             st.text_area("Texte de la transcription", texte_transcription, height=300)
-            # Bouton de téléchargement de la transcription
             try:
                 with open(chemin_transcription, "r", encoding="utf-8") as fichier:
                     contenu_transcription = fichier.read()
