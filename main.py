@@ -120,17 +120,18 @@ if st.button("Lancer la transcription"):
                 progress_bar.progress(100)
                 progress_text.text("Progression : 100%")
         if texte_transcription:
-            # Création du nom du fichier de transcription
-            chemin_transcription = os.path.splitext(chemin_audio)[0] + ".txt"
-            # Enregistrement de la transcription dans un fichier texte
-            try:
-                with open(chemin_transcription, "w", encoding="utf-8") as fichier:
-                    fichier.write("**** *vidéo_1\n" + texte_transcription)
-                st.success(f"Transcription enregistrée dans : {chemin_transcription}")
-            except Exception as e:
-                st.error(f"Erreur lors de l'enregistrement de la transcription : {e}")
-            # Affichage de la transcription dans l'interface
+        # Affichage de la transcription dans l'interface
             st.subheader("Transcription")
             st.text_area("Texte de la transcription", texte_transcription, height=300)
+            # Bouton de téléchargement de la transcription
+            try:
+                with open(chemin_transcription, "r", encoding="utf-8") as fichier:
+                    contenu_transcription = fichier.read()
+                st.download_button("Télécharger la transcription",
+                                   data=contenu_transcription,
+                                   file_name=os.path.basename(chemin_transcription),
+                                   mime="text/plain")
+            except Exception as e:
+                st.error(f"Erreur lors de la préparation du téléchargement : {e}")
         else:
             st.error("La transcription a échoué.")
