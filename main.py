@@ -39,6 +39,7 @@ def transcrire_audio(chemin_audio, taille_modele="base", langue="fr"):
 
 # Interface Streamlit
 st.title("Transcription d'audio - Vidéo YouTube ou Fichier MP3")
+st.markdown("[www.codeandcortex.fr](https://www.codeandcortex.fr)")
 
 st.markdown("""
 Ce script permet de télécharger l'audio d'une vidéo YouTube ou d'importer un fichier audio MP3, puis de le transcrire en texte.
