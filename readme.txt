@@ -1,3 +1,5 @@
+# www.codeandcortex.fr
+
 # Transcription d'audio avec whisper - OpenAI
 
 ## Utilisation
