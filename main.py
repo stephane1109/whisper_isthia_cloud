@@ -38,7 +38,7 @@ def transcrire_audio(chemin_audio, taille_modele="base", langue="fr"):
         return None
 
 # Interface Streamlit
-st.title("Transcription d'audio - Vidéo YouTube ou Fichier MP3")
+st.title("Speech to text avec Whisper - OpenAI")
 st.markdown("[www.codeandcortex.fr](https://www.codeandcortex.fr)")
 
 st.markdown("""
