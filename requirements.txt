@@ -1,4 +1,5 @@
 streamlit
 yt-dlp
+torch
 openai-whisper
 ffmpeg
