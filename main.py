@@ -31,7 +31,7 @@ def telecharger_audio_youtube(url, chemin_sortie="Téléchargement"):
 def transcrire_audio(chemin_audio, taille_modele="base", langue="fr"):
     try:
         modele = whisper.load_model(taille_modele)
-        resultat = modele.transcribe(chemin_audio, language=langue)
+        resultat = modele.transcribe(chemin_audio, language=langue, fp16=False)
         return resultat["text"]
     except Exception as e:
         st.error(f"Erreur lors de la transcription : {e}")
